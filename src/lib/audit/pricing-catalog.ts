@@ -465,7 +465,10 @@ export const alternativeOptions = [
   },
 ] as const satisfies readonly AlternativeOption[];
 
-export function getPlanPricing(toolId: SpendToolId, tier: string) {
+export function getPlanPricing(
+  toolId: SpendToolId,
+  tier: string,
+): PlanPricing | undefined {
   return pricingCatalog[toolId].plans.find((plan) => plan.tier === tier);
 }
 
@@ -490,4 +493,3 @@ export function estimatePlanCost(plan: PlanPricing, seats: number) {
 
   return (plan.monthlyBasePrice ?? 0) + seatCost;
 }
-
