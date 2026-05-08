@@ -81,13 +81,16 @@ function auditTool(
         currentMonthlySpend,
       )
     : null;
-  const cheaperAlternative = findCheaperAlternative(
-    toolId,
-    state,
-    seats,
-    teamSize,
-    currentMonthlySpend,
-  );
+  const cheaperAlternative =
+    currentPlan?.type === "api" || currentPlan?.usageBased
+      ? null
+      : findCheaperAlternative(
+          toolId,
+          state,
+          seats,
+          teamSize,
+          currentMonthlySpend,
+        );
   const bestSavings = pickBestSavingsRecommendation([
     cheaperSameVendorPlan,
     cheaperAlternative,
