@@ -16,7 +16,7 @@ const sources = {
   },
   chatgptBusinessHelp: {
     label: "ChatGPT Business help",
-    url: "https://help.openai.com/en/articles/8792828-what-is-chatgpt-team",
+    url: "https://help.openai.com/en/articles/8792828-what-is-chatgpt-business",
     verifiedAt: VERIFIED_AT,
   },
   chatgptPlans: {
