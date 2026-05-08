@@ -79,6 +79,7 @@ function auditTool(
         seats,
         teamSize,
         currentMonthlySpend,
+        expectedPlanMonthlyCost,
       )
     : null;
   const cheaperAlternative =
@@ -187,6 +188,7 @@ function findCheaperSameVendorPlan(
   seats: number,
   teamSize: number,
   currentMonthlySpend: number,
+  expectedCurrentPlanCost: number | null,
 ): SavingsRecommendation | null {
   if (currentMonthlySpend <= 0) {
     return null;
@@ -205,6 +207,12 @@ function findCheaperSameVendorPlan(
       }
 
       if (!isPlanReasonableForSavings(plan, seats, teamSize)) {
+        return recommendations;
+      }
+
+      const comparisonCost = expectedCurrentPlanCost ?? currentMonthlySpend;
+
+      if (estimatedMonthlyCost >= comparisonCost) {
         return recommendations;
       }
 
