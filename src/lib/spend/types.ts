@@ -8,6 +8,13 @@ export const primaryUseCases = [
 
 export type PrimaryUseCase = (typeof primaryUseCases)[number];
 
+export function isPrimaryUseCase(value: unknown): value is PrimaryUseCase {
+  return (
+    typeof value === "string" &&
+    (primaryUseCases as readonly string[]).includes(value)
+  );
+}
+
 export type ToolSpendInput = {
   isActive: boolean;
   planTier: string;

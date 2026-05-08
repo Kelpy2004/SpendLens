@@ -12,6 +12,7 @@ import type {
   SpendFormState,
   ToolSpendInput,
 } from "@/lib/spend/types";
+import { isPrimaryUseCase } from "@/lib/spend/types";
 
 const STORAGE_KEY = "spendlens:spend-input:v1";
 
@@ -45,7 +46,9 @@ function mergeSavedState(savedState: unknown): SpendFormState {
 
   return {
     teamSize: Math.max(1, sanitizeSeatInput(Number(maybeState.teamSize ?? 12))),
-    primaryUseCase: maybeState.primaryUseCase ?? defaultState.primaryUseCase,
+    primaryUseCase: isPrimaryUseCase(maybeState.primaryUseCase)
+      ? maybeState.primaryUseCase
+      : defaultState.primaryUseCase,
     tools: Object.fromEntries(
       spendToolDefinitions.map((tool) => {
         const defaultInput = defaultState.tools[tool.id];

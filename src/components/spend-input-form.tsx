@@ -125,14 +125,14 @@ export function SpendInputForm() {
                 />
               </label>
 
-              <div>
-                <p className="mb-2 flex items-center gap-2 text-sm font-semibold text-[#3d382f]">
+              <fieldset>
+                <legend className="mb-2 flex items-center gap-2 text-sm font-semibold text-[#3d382f]">
                   <FlaskConical
                     aria-hidden
                     className="h-4 w-4 text-[#be123c]"
                   />
                   Primary use case
-                </p>
+                </legend>
                 <div className="grid grid-cols-2 gap-2 sm:grid-cols-5">
                   {primaryUseCases.map((useCase) => {
                     const meta = useCaseMeta[useCase];
@@ -160,7 +160,7 @@ export function SpendInputForm() {
                     );
                   })}
                 </div>
-              </div>
+              </fieldset>
             </section>
 
             <section className="grid gap-4 md:grid-cols-2">
@@ -195,6 +195,7 @@ export function SpendInputForm() {
                       <label className="flex shrink-0 items-center gap-2 text-sm font-semibold text-[#4f493d]">
                         <input
                           checked={input.isActive}
+                          aria-label={`Mark ${tool.name} as in stack`}
                           className="peer sr-only"
                           type="checkbox"
                           onChange={(event) =>
