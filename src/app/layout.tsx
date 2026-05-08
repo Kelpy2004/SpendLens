@@ -15,7 +15,7 @@ const geistMono = localFont({
 
 export const metadata: Metadata = {
   title: "SpendLens",
-  description: "Audit AI tool spend before it quietly eats the budget.",
+  description: "Map AI tool spend by vendor, plan, seats, and monthly budget.",
 };
 
 export default function RootLayout({
