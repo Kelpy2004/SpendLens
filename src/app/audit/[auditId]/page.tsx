@@ -20,7 +20,7 @@ type AuditPageProps = {
   };
 };
 
-const sharedTitle = "SpendLens - Your AI Spend Audit";
+const sharedTitle = "SpendLens — Your AI Spend Audit";
 
 export function generateMetadata({
   params,
