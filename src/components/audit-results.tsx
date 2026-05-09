@@ -10,15 +10,17 @@ import {
 import Link from "next/link";
 
 import { ShareAuditButton } from "@/components/share-audit-button";
+import type { AuditSummaryResult } from "@/lib/audit/ai-summary";
 import type { AuditReport, ToolAuditResult } from "@/lib/audit/types";
 import { formatCurrency } from "@/lib/spend/summary";
 
 type AuditResultsProps = {
   report: AuditReport;
   shareUrl: string;
+  summary: AuditSummaryResult;
 };
 
-export function AuditResults({ report, shareUrl }: AuditResultsProps) {
+export function AuditResults({ report, shareUrl, summary }: AuditResultsProps) {
   const hasCredexOpportunity = report.totalMonthlySavings > 500;
   const isSpendingWell = report.totalMonthlySavings < 100;
   const activeTools = report.results.length;
@@ -92,6 +94,20 @@ export function AuditResults({ report, shareUrl }: AuditResultsProps) {
 
       <div className="mx-auto grid w-full max-w-7xl gap-7 px-5 py-8 sm:px-8 lg:grid-cols-[minmax(0,1fr)_360px] lg:px-10">
         <section className="grid gap-4">
+          <section className="rounded-lg border border-[#dedbd2] bg-white p-5 shadow-sm">
+            <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
+              <p className="text-sm font-bold uppercase tracking-[0.16em] text-[#756f61]">
+                Personalized summary
+              </p>
+              <span className="rounded-full bg-[#f1eee7] px-2.5 py-1 text-xs font-bold uppercase tracking-[0.12em] text-[#635c4f]">
+                {summary.source === "anthropic"
+                  ? "Generated with Claude"
+                  : "Rule-based fallback"}
+              </span>
+            </div>
+            <p className="text-base leading-7 text-[#3d382f]">{summary.text}</p>
+          </section>
+
           <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <p className="text-sm font-bold uppercase tracking-[0.16em] text-[#756f61]">
@@ -284,4 +300,3 @@ function InfoRow({ label, value }: { label: string; value: string }) {
 function capitalize(value: string) {
   return value.charAt(0).toUpperCase() + value.slice(1);
 }
-

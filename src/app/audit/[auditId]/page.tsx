@@ -3,6 +3,7 @@ import { headers } from "next/headers";
 import Link from "next/link";
 
 import { AuditResults } from "@/components/audit-results";
+import { generateAuditSummary } from "@/lib/audit/ai-summary";
 import { buildAuditReport } from "@/lib/audit/engine";
 import {
   createSpendStateFromPublicAudit,
@@ -87,9 +88,10 @@ export default async function AuditPage({
   }
 
   const report = buildAuditReport(createSpendStateFromPublicAudit(payload));
+  const summary = await generateAuditSummary(report);
   const shareUrl = buildShareUrl(params.auditId, searchParams.s);
 
-  return <AuditResults report={report} shareUrl={shareUrl} />;
+  return <AuditResults report={report} shareUrl={shareUrl} summary={summary} />;
 }
 
 function InvalidAuditPage() {
@@ -129,4 +131,3 @@ function buildShareUrl(auditId: string, payload: string | string[] | undefined) 
 
   return url.toString();
 }
-
