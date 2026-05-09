@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  ArrowRight,
   BadgeDollarSign,
   Check,
   CircleDollarSign,
@@ -14,8 +15,13 @@ import {
   Users,
   WalletCards,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 import { usePersistedSpendForm } from "@/hooks/use-persisted-spend-form";
+import {
+  createPublicAuditPayload,
+  encodePublicAuditPayload,
+} from "@/lib/audit/public-audit";
 import { spendToolDefinitions } from "@/lib/spend/tool-catalog";
 import {
   calculateSpendSummary,
@@ -46,6 +52,7 @@ function parseNumberInput(value: string) {
 }
 
 export function SpendInputForm() {
+  const router = useRouter();
   const {
     hasHydrated,
     lastSavedAt,
@@ -56,6 +63,7 @@ export function SpendInputForm() {
     updateTool,
   } = usePersistedSpendForm();
   const summary = calculateSpendSummary(state);
+  const canRunAudit = summary.activeToolCount > 0 && summary.monthlyTotal > 0;
   const savedLabel = !hasHydrated
     ? "Loading draft"
     : lastSavedAt
@@ -64,6 +72,16 @@ export function SpendInputForm() {
           minute: "2-digit",
         })}`
       : "Saved locally";
+  const runAudit = () => {
+    if (!canRunAudit) {
+      return;
+    }
+
+    const payload = createPublicAuditPayload(state);
+    const encodedPayload = encodePublicAuditPayload(payload);
+
+    router.push(`/audit/${payload.id}?s=${encodedPayload}`);
+  };
 
   return (
     <main className="min-h-screen bg-[#f5f6f2] text-[#171512]">
@@ -346,6 +364,20 @@ export function SpendInputForm() {
                     : "No active spend yet"}
                 </p>
               </div>
+
+              <button
+                className="mt-5 inline-flex h-12 w-full items-center justify-center gap-2 rounded-lg bg-[#f4d35e] px-4 text-sm font-bold text-[#171512] transition hover:bg-[#ffd76a] disabled:cursor-not-allowed disabled:bg-white/15 disabled:text-white/45"
+                disabled={!canRunAudit}
+                type="button"
+                onClick={runAudit}
+              >
+                Run audit
+                <ArrowRight aria-hidden className="h-4 w-4" />
+              </button>
+              <p className="mt-3 text-xs leading-5 text-[#cfc6b3]">
+                Share URLs include spend inputs only. No email or company fields
+                are written into public links.
+              </p>
             </section>
           </aside>
         </section>
