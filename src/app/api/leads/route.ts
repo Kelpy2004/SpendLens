@@ -71,7 +71,17 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const supabase = getSupabaseAdminClient();
+  let supabase: ReturnType<typeof getSupabaseAdminClient>;
+
+  try {
+    supabase = getSupabaseAdminClient();
+  } catch {
+    return NextResponse.json(
+      { error: "Lead storage is not configured in this environment." },
+      { status: 503 },
+    );
+  }
+
   const insertPayload: LeadInsert = {
     annual_savings: lead.annualSavings,
     audit_id: lead.auditId,
@@ -125,4 +135,3 @@ function getIpAddress(request: NextRequest) {
 
   return request.headers.get("x-real-ip") ?? "unknown";
 }
-
