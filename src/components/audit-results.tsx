@@ -9,18 +9,25 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 
+import { LeadCaptureForm } from "@/components/lead-capture-form";
 import { ShareAuditButton } from "@/components/share-audit-button";
 import type { AuditSummaryResult } from "@/lib/audit/ai-summary";
 import type { AuditReport, ToolAuditResult } from "@/lib/audit/types";
 import { formatCurrency } from "@/lib/spend/summary";
 
 type AuditResultsProps = {
+  auditId: string;
   report: AuditReport;
   shareUrl: string;
   summary: AuditSummaryResult;
 };
 
-export function AuditResults({ report, shareUrl, summary }: AuditResultsProps) {
+export function AuditResults({
+  auditId,
+  report,
+  shareUrl,
+  summary,
+}: AuditResultsProps) {
   const hasCredexOpportunity = report.totalMonthlySavings > 500;
   const isSpendingWell = report.totalMonthlySavings < 100;
   const activeTools = report.results.length;
@@ -183,6 +190,8 @@ export function AuditResults({ report, shareUrl, summary }: AuditResultsProps) {
               />
             </dl>
           </section>
+
+          <LeadCaptureForm auditId={auditId} report={report} shareUrl={shareUrl} />
         </aside>
       </div>
     </main>

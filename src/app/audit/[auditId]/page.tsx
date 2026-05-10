@@ -91,7 +91,14 @@ export default async function AuditPage({
   const summary = await generateAuditSummary(report);
   const shareUrl = buildShareUrl(params.auditId, searchParams.s);
 
-  return <AuditResults report={report} shareUrl={shareUrl} summary={summary} />;
+  return (
+    <AuditResults
+      auditId={params.auditId}
+      report={report}
+      shareUrl={shareUrl}
+      summary={summary}
+    />
+  );
 }
 
 function InvalidAuditPage() {
