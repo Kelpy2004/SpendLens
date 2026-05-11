@@ -27,8 +27,10 @@ export function generateMetadata({
   searchParams,
 }: AuditPageProps): Metadata {
   const payload = decodePublicAuditPayload(searchParams.s);
-  const siteUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://spendlens.vercel.app";
-  const canonicalUrl = new URL(`/audit/${params.auditId}`, siteUrl);
+  const canonicalUrl = new URL(
+    `/audit/${params.auditId}`,
+    getRequestOrigin(),
+  );
 
   if (typeof searchParams.s === "string") {
     canonicalUrl.searchParams.set("s", searchParams.s);
@@ -127,14 +129,23 @@ function InvalidAuditPage() {
 }
 
 function buildShareUrl(auditId: string, payload: string | string[] | undefined) {
-  const headerList = headers();
-  const protocol = headerList.get("x-forwarded-proto") ?? "http";
-  const host = headerList.get("host") ?? "localhost:3000";
-  const url = new URL(`/audit/${auditId}`, `${protocol}://${host}`);
+  const url = new URL(`/audit/${auditId}`, getRequestOrigin());
 
   if (typeof payload === "string") {
     url.searchParams.set("s", payload);
   }
 
   return url.toString();
+}
+
+function getRequestOrigin() {
+  if (process.env.NEXT_PUBLIC_APP_URL) {
+    return process.env.NEXT_PUBLIC_APP_URL;
+  }
+
+  const headerList = headers();
+  const protocol = headerList.get("x-forwarded-proto") ?? "https";
+  const host = headerList.get("host") ?? "localhost:3000";
+
+  return `${protocol}://${host}`;
 }
