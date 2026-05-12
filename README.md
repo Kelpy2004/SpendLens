@@ -1,30 +1,42 @@
 # SpendLens
 
-SpendLens is an AI spend audit for teams that have accumulated too many subscriptions, API bills, and seat-based tools without a clear owner. It turns a messy stack into a simple recommendation: keep it, downgrade it, switch it, or centralize the cleanup through Credex when the savings are big enough.
+SpendLens is a free AI spend audit tool for startup founders, engineering managers, and finance leads who are paying for Cursor, Copilot, Claude, ChatGPT, Gemini, and API usage without a clear picture of whether any of it is right-sized. You enter your stack, get an instant audit with defensible savings math, and only then see the option to save the report by email.
 
-The app is designed to feel useful before it asks for anything. Users enter their AI stack, get a public result page with defensible savings math, and only then see the option to save the audit by email.
+**Live:** https://spendlens-nu.vercel.app/
+
+---
+
+## Screenshots
+
+![SpendLens intake form](public/screenshots/home-intake.png)
+*Intake form — enter tools, plans, monthly spend, and seats*
+
+![SpendLens audit results](public/screenshots/audit-result.png)
+*Audit results — savings hero, per-tool breakdown, Credex callout for large savings*
+
+![SpendLens mobile](public/screenshots/mobile-audit.png)
+*Mobile audit results*
+
+---
 
 ## Quick Start
-
-Install dependencies:
 
 ```bash
 npm install
 ```
 
-Create a local env file from the example:
-
 ```bash
-copy .env.example .env.local
+copy .env.example .env.local   # Windows
+cp .env.example .env.local     # Mac/Linux
 ```
-
-Run the app:
 
 ```bash
 npm run dev
 ```
 
-Run checks:
+The app runs without Anthropic, Supabase, or Resend keys. The anonymous audit flow works fully. Anthropic falls back to a templated summary. Lead capture returns a clean 503 until Supabase variables are set.
+
+**Run checks:**
 
 ```bash
 npm run lint
@@ -32,31 +44,11 @@ npm test
 npm run build
 ```
 
-The app works without Anthropic, Supabase, or Resend keys for the anonymous audit flow. Anthropic falls back to a templated summary. Lead capture returns a clear storage configuration error until Supabase server variables are set.
+**Deploy:** Push to Vercel. Set the environment variables below and run the Supabase migration at `supabase/migrations/202605100001_create_leads.sql` against your remote project.
 
-## Decisions
+**Required environment variables:**
 
-1. Audit rules are TypeScript, not AI. The AI summary is useful polish, but finance recommendations should be deterministic, testable, and easy to challenge. That is why the engine lives in pure functions and the prompt only sees already-computed facts.
-
-2. Public audit URLs store sanitized spend data instead of creating a database row for every anonymous result. This keeps the first version simple and shareable. The trade-off is longer URLs, which is why `ARCHITECTURE.md` calls out stored audit snapshots as the first scale upgrade.
-
-3. Lead capture appears after the result, not before it. That probably lowers raw email volume, but it increases trust. For this product, a smaller list of people who saw value is better than a larger list collected through friction.
-
-4. API spend is not treated like seat spend. It would be easy to claim big fake savings by comparing API bills to app subscriptions. SpendLens refuses to do that unless there is usage detail, which makes the recommendations less flashy but much more defensible.
-
-5. The rate limiter is in memory for now. That is acceptable for a hiring assignment and a small launch, but it is not enough for a multi-region production system. The correct next step is a shared store like Upstash Redis or Vercel KV.
-
-## Lead Capture And Abuse Controls
-
-Lead capture appears only after the audit result is visible. That is intentional: asking for an email before showing value would make this feel like a lead-gen trap, and it would also weaken the trust we need from finance and engineering users.
-
-The lead form includes a hidden `website` field as a honeypot. Real users never see it or tab into it, but simple bots often fill every input they find. When that field has a value, the API returns a normal success response and quietly skips Supabase and Resend. That keeps bot feedback low without adding friction for real users.
-
-The `/api/leads` route also rate limits by IP and email in memory. That is enough for this assignment and for a small Product Hunt launch, but the first production upgrade would be moving those counters to Upstash Redis or another shared store so limits survive serverless cold starts and multiple regions.
-
-Required runtime variables for this phase:
-
-```text
+```
 NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_ANON_KEY=
 SUPABASE_SERVICE_ROLE_KEY=
@@ -66,3 +58,30 @@ ANTHROPIC_MODEL=
 RESEND_API_KEY=
 RESEND_FROM_EMAIL=
 ```
+
+---
+
+## Decisions
+
+**1. Audit logic is hardcoded TypeScript, not AI.**
+Finance recommendations need to be deterministic and testable. If the engine says "downgrade from Copilot Enterprise to Business and save $200/month," a finance person should be able to verify that against the vendor pricing page. A model can't be audited. Pure functions can. The Anthropic API is used only for the summary paragraph — polish, not math.
+
+**2. Public audit URLs encode the spend snapshot instead of storing it.**
+My first instinct was to write every audit to Supabase and serve results from the database. I reversed that on Day 3. Storing anonymous company spend data before the user has agreed to anything breaks the product's core promise — show value first, ask for nothing until after. URL encoding is a real trade-off (longer links) but it keeps the anonymous flow completely offline, and the result page renders from the URL with no backend read at all.
+
+**3. Lead capture comes after the result, not before.**
+Putting an email gate before the audit would probably increase raw capture volume. It would also kill trust. Finance people who land here from a tweet are already skeptical. The product earns the email by showing real savings first. A smaller list of people who saw value and chose to save it beats a bigger list collected through friction.
+
+**4. API spend gets a usage-review flag, not a savings claim.**
+It would be easy to claim huge savings by comparing an API bill to a cheaper app subscription. SpendLens doesn't do that. API spend is flagged for usage review — export token usage by model before making any recommendation. That makes the output less dramatic but a lot more honest. A finance person who runs the audit twice should get the same answer both times.
+
+**5. Rate limiting lives in memory, not a shared store.**
+For this build it's fine — the app runs on Vercel with low traffic. In a real production deployment across multiple regions, in-memory rate limits don't survive cold starts and don't coordinate between instances. The right fix is Upstash Redis or Vercel KV. That's documented in ARCHITECTURE.md and easy to swap in.
+
+---
+
+## Lead Capture and Abuse Controls
+
+The lead form includes a hidden `website` field as a honeypot. Real users never see it or tab to it. When it has a value, the API returns 201 and quietly skips Supabase and Resend — no data written, no signal to the bot that anything happened.
+
+The `/api/leads` route rate limits by IP (8 requests per 10 minutes) and by email (3 per 15 minutes). That's enough for a launch and handles the obvious abuse patterns without adding a CAPTCHA that would slow down real users.
