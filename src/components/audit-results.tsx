@@ -56,20 +56,32 @@ export function AuditResults({
             <ShareAuditButton shareUrl={shareUrl} />
           </header>
 
-          <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_380px] lg:items-end">
-            <div>
+          <div className="grid min-w-0 gap-8 lg:grid-cols-[minmax(0,1fr)_380px] lg:items-end">
+            <div className="min-w-0">
               <div className="mb-5 inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-sm font-semibold text-[#f4d35e]">
                 <Sparkles aria-hidden className="h-4 w-4" />
                 {isSpendingWell
                   ? "You're spending well"
                   : "Savings opportunity found"}
               </div>
-              <h1 className="max-w-4xl text-5xl font-semibold leading-tight tracking-normal sm:text-6xl">
-                {isSpendingWell
-                  ? "Your AI budget is already disciplined."
-                  : "See exactly where your AI budget is leaking."}
+              <h1 className="max-w-4xl break-words text-3xl font-semibold leading-tight tracking-normal sm:text-5xl lg:text-6xl">
+                {isSpendingWell ? (
+                  <>
+                    <span className="block">Your AI budget is</span>
+                    <span className="block">already disciplined.</span>
+                  </>
+                ) : (
+                  <>
+                    <span className="block">See exactly where</span>
+                    <span className="block">your AI budget is</span>
+                    <span className="block">leaking.</span>
+                  </>
+                )}
               </h1>
-              <p className="mt-5 max-w-2xl text-lg leading-8 text-[#d8d0be]">
+              <p
+                className="mt-5 max-w-[300px] text-sm leading-7 text-[#d8d0be] sm:max-w-2xl sm:text-lg sm:leading-8"
+                style={{ overflowWrap: "anywhere" }}
+              >
                 {isSpendingWell
                   ? "SpendLens found less than $100/month in defendable cuts, so the right move is monitoring usage instead of forcing fake savings."
                   : `SpendLens found ${formatCurrency(
@@ -78,7 +90,7 @@ export function AuditResults({
               </p>
             </div>
 
-            <div className="grid gap-3">
+            <div className="grid min-w-0 gap-3">
               <MetricRow
                 label="Monthly savings"
                 value={formatCurrency(report.totalMonthlySavings)}
@@ -100,8 +112,8 @@ export function AuditResults({
       </section>
 
       <div className="mx-auto grid w-full max-w-7xl gap-7 px-5 py-8 sm:px-8 lg:grid-cols-[minmax(0,1fr)_360px] lg:px-10">
-        <section className="grid gap-4">
-          <section className="rounded-lg border border-[#dedbd2] bg-white p-5 shadow-sm">
+        <section className="grid min-w-0 gap-4">
+          <section className="max-w-[calc(100vw-2.5rem)] rounded-lg border border-[#dedbd2] bg-white p-5 shadow-sm sm:max-w-none">
             <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
               <p className="text-sm font-bold uppercase tracking-[0.16em] text-[#756f61]">
                 Personalized summary
@@ -112,7 +124,12 @@ export function AuditResults({
                   : "Rule-based fallback"}
               </span>
             </div>
-            <p className="text-base leading-7 text-[#3d382f]">{summary.text}</p>
+            <p
+              className="max-w-[300px] text-sm leading-7 text-[#3d382f] sm:max-w-none sm:text-base"
+              style={{ overflowWrap: "anywhere" }}
+            >
+              {summary.text}
+            </p>
           </section>
 
           <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
@@ -134,7 +151,7 @@ export function AuditResults({
           ))}
         </section>
 
-        <aside className="grid h-fit gap-4 lg:sticky lg:top-6">
+        <aside className="grid min-w-0 h-fit gap-4 lg:sticky lg:top-6">
           {hasCredexOpportunity ? (
             <section className="rounded-lg border border-[#0f5132] bg-[#e7f4ec] p-5 shadow-sm">
               <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-lg bg-[#0f5132] text-white">
@@ -265,12 +282,14 @@ function MetricRow({
   value: string;
 }) {
   return (
-    <div className="flex items-center justify-between gap-4 rounded-lg bg-white/10 px-4 py-3">
-      <div className="flex items-center gap-3">
+    <div className="flex min-w-0 flex-col items-start gap-2 rounded-lg bg-white/10 px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
+      <div className="flex min-w-0 items-center gap-3">
         <Icon aria-hidden className="h-5 w-5 text-[#f4d35e]" />
-        <span className="text-sm text-[#d8d0be]">{label}</span>
+        <span className="min-w-0 text-sm text-[#d8d0be]">{label}</span>
       </div>
-      <span className="text-lg font-semibold tracking-normal">{value}</span>
+      <span className="break-words text-lg font-semibold tracking-normal sm:shrink-0">
+        {value}
+      </span>
     </div>
   );
 }

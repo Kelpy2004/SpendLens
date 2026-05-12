@@ -9,6 +9,8 @@ const customJestConfig = {
   moduleNameMapper: {
     "^@/(.*)$": "<rootDir>/src/$1",
   },
+  modulePathIgnorePatterns: ["<rootDir>/.claude/"],
+  testPathIgnorePatterns: ["<rootDir>/.claude/"],
   testEnvironment: "node",
 };
 

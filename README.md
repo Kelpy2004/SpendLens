@@ -4,6 +4,16 @@ SpendLens is an AI spend audit for teams that have accumulated too many subscrip
 
 The app is designed to feel useful before it asks for anything. Users enter their AI stack, get a public result page with defensible savings math, and only then see the option to save the audit by email.
 
+Live app: [https://spendlens-nu.vercel.app](https://spendlens-nu.vercel.app)
+
+## Screenshots
+
+![SpendLens intake form](public/screenshots/home-intake.png)
+
+![SpendLens audit result](public/screenshots/audit-result.png)
+
+![SpendLens mobile audit result](public/screenshots/mobile-audit.png)
+
 ## Quick Start
 
 Install dependencies:
