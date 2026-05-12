@@ -12,6 +12,8 @@ Secondary CTA: View a sample audit
 
 ## Social Proof
 
+_These testimonials are mocked for the purpose of this submission. They represent the type of user and reaction SpendLens is designed to produce, based on the target audience defined in GTM.md._
+
 "SpendLens found $1,240/month in obvious AI subscription overlap before our renewal meeting. The best part was that engineering did not feel attacked."  
 Maya R., Head of Finance at a 42-person dev-tools startup
 

@@ -4,6 +4,7 @@ import {
   ArrowRight,
   BadgeDollarSign,
   Check,
+  ChevronDown,
   CircleDollarSign,
   Code2,
   Database,
@@ -12,9 +13,11 @@ import {
   Layers3,
   RefreshCcw,
   Search,
+  Sparkles,
   Users,
   WalletCards,
 } from "lucide-react";
+import { useRef } from "react";
 import { useRouter } from "next/navigation";
 
 import { usePersistedSpendForm } from "@/hooks/use-persisted-spend-form";
@@ -22,7 +25,10 @@ import {
   createPublicAuditPayload,
   encodePublicAuditPayload,
 } from "@/lib/audit/public-audit";
-import { spendToolDefinitions } from "@/lib/spend/tool-catalog";
+import {
+  createDefaultSpendFormState,
+  spendToolDefinitions,
+} from "@/lib/spend/tool-catalog";
 import {
   calculateSpendSummary,
   formatCurrency,
@@ -53,6 +59,7 @@ function parseNumberInput(value: string) {
 
 export function SpendInputForm() {
   const router = useRouter();
+  const formRef = useRef<HTMLDivElement>(null);
   const {
     hasHydrated,
     lastSavedAt,
@@ -64,28 +71,91 @@ export function SpendInputForm() {
   } = usePersistedSpendForm();
   const summary = calculateSpendSummary(state);
   const canRunAudit = summary.activeToolCount > 0 && summary.monthlyTotal > 0;
+
   const savedLabel = !hasHydrated
-    ? "Loading draft"
+    ? null
     : lastSavedAt
       ? `Saved ${lastSavedAt.toLocaleTimeString([], {
           hour: "2-digit",
           minute: "2-digit",
         })}`
-      : "Saved locally";
-  const runAudit = () => {
-    if (!canRunAudit) {
-      return;
-    }
+      : "Auto-saved";
 
+  const scrollToForm = () => {
+    formRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const runSampleAudit = () => {
+    const sample = createDefaultSpendFormState();
+    sample.teamSize = 12;
+    sample.primaryUseCase = "coding";
+    sample.tools["cursor"] = { isActive: true, planTier: "Business", monthlySpend: 400, seats: 10 };
+    sample.tools["github-copilot"] = { isActive: true, planTier: "Enterprise", monthlySpend: 390, seats: 10 };
+    sample.tools["claude"] = { isActive: true, planTier: "Team", monthlySpend: 300, seats: 12 };
+    const payload = createPublicAuditPayload(sample);
+    const encoded = encodePublicAuditPayload(payload);
+    router.push(`/audit/${payload.id}?s=${encoded}`);
+  };
+
+  const runAudit = () => {
+    if (!canRunAudit) return;
     const payload = createPublicAuditPayload(state);
     const encodedPayload = encodePublicAuditPayload(payload);
-
     router.push(`/audit/${payload.id}?s=${encodedPayload}`);
   };
 
   return (
     <main className="min-h-screen bg-[#f5f6f2] text-[#171512]">
-      <div className="mx-auto flex w-full max-w-7xl flex-col gap-8 px-5 py-6 sm:px-8 lg:px-10">
+
+      {/* ── Hero ── */}
+      <section className="border-b border-[#dedbd2] bg-white px-5 py-20 text-center sm:px-8">
+        <div className="mx-auto max-w-2xl">
+          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-[#dedbd2] bg-[#f5f6f2] px-4 py-1.5 text-sm font-medium text-[#5f5a4b]">
+            <Sparkles aria-hidden className="h-3.5 w-3.5 text-[#f4d35e]" />
+            Free · No login · Takes 2 minutes
+          </div>
+
+          <h1 className="text-5xl font-semibold leading-[1.1] tracking-tight text-[#171512] sm:text-6xl">
+            Stop guessing what your AI stack actually costs.
+          </h1>
+
+          <p className="mx-auto mt-6 max-w-xl text-lg leading-8 text-[#6f695c]">
+            Enter your tools, plans, and seats. SpendLens compares against
+            current vendor pricing and shows exactly where you&apos;re overpaying —
+            with numbers your finance team can verify.
+          </p>
+
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+            <button
+              className="inline-flex h-12 items-center gap-2 rounded-lg bg-[#171512] px-6 text-sm font-bold text-white transition hover:bg-[#2a251f]"
+              onClick={scrollToForm}
+              type="button"
+            >
+              Start free audit
+              <ChevronDown aria-hidden className="h-4 w-4" />
+            </button>
+            <button
+              className="inline-flex h-12 items-center gap-2 rounded-lg border border-[#d9d4c8] bg-white px-6 text-sm font-bold text-[#4f493d] shadow-sm transition hover:border-[#bcb4a2] hover:text-[#171512]"
+              onClick={runSampleAudit}
+              type="button"
+            >
+              See a sample result
+              <ArrowRight aria-hidden className="h-4 w-4" />
+            </button>
+          </div>
+
+          <p className="mt-5 text-xs text-[#9c9385]">
+            Covers Cursor · GitHub Copilot · Claude · ChatGPT · Gemini ·
+            Windsurf · Anthropic API · OpenAI API
+          </p>
+        </div>
+      </section>
+
+      {/* ── Intake form ── */}
+      <div
+        ref={formRef}
+        className="mx-auto flex w-full max-w-7xl flex-col gap-8 px-5 py-8 sm:px-8 lg:px-10"
+      >
         <header className="flex flex-col gap-5 border-b border-[#dedbd2] pb-6 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-3xl">
             <div className="mb-4 flex items-center gap-3">
@@ -99,16 +169,18 @@ export function SpendInputForm() {
                 <p className="text-sm text-[#756f61]">AI spend intake</p>
               </div>
             </div>
-            <h1 className="max-w-2xl text-4xl font-semibold leading-tight tracking-normal text-[#171512] sm:text-5xl">
+            <p className="max-w-2xl text-2xl font-semibold leading-snug tracking-normal text-[#171512]">
               Map every AI subscription before the audit starts.
-            </h1>
+            </p>
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
-            <div className="flex items-center gap-2 rounded-lg border border-[#d9d4c8] bg-white px-3 py-2 text-sm font-medium text-[#4f493d] shadow-sm">
-              <Check aria-hidden className="h-4 w-4 text-[#0f8a5f]" />
-              {savedLabel}
-            </div>
+            {savedLabel && (
+              <div className="flex items-center gap-2 rounded-lg border border-[#d9d4c8] bg-white px-3 py-2 text-sm font-medium text-[#4f493d] shadow-sm">
+                <Check aria-hidden className="h-4 w-4 text-[#0f8a5f]" />
+                {savedLabel}
+              </div>
+            )}
             <button
               className="inline-flex h-10 items-center gap-2 rounded-lg border border-[#d9d4c8] bg-white px-3 text-sm font-semibold text-[#4f493d] shadow-sm transition hover:border-[#bcb4a2] hover:text-[#171512]"
               type="button"
@@ -122,6 +194,8 @@ export function SpendInputForm() {
 
         <section className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_340px]">
           <div className="flex flex-col gap-6">
+
+            {/* Team size + use case */}
             <section className="grid gap-4 rounded-lg border border-[#dedbd2] bg-white p-5 shadow-sm md:grid-cols-[220px_minmax(0,1fr)]">
               <label
                 className="flex flex-col gap-2 text-sm font-semibold text-[#3d382f]"
@@ -145,10 +219,7 @@ export function SpendInputForm() {
 
               <fieldset>
                 <legend className="mb-2 flex items-center gap-2 text-sm font-semibold text-[#3d382f]">
-                  <FlaskConical
-                    aria-hidden
-                    className="h-4 w-4 text-[#be123c]"
-                  />
+                  <FlaskConical aria-hidden className="h-4 w-4 text-[#be123c]" />
                   Primary use case
                 </legend>
                 <div className="grid grid-cols-2 gap-2 sm:grid-cols-5">
@@ -181,6 +252,7 @@ export function SpendInputForm() {
               </fieldset>
             </section>
 
+            {/* Tool cards */}
             <section className="grid gap-4 md:grid-cols-2">
               {spendToolDefinitions.map((tool) => {
                 const input = state.tools[tool.id];
@@ -189,7 +261,7 @@ export function SpendInputForm() {
                   <article
                     className={`rounded-lg border bg-white p-5 shadow-sm transition ${
                       input.isActive
-                        ? "border-[#171512]"
+                        ? "border-[#171512] ring-1 ring-[#171512]/10"
                         : "border-[#dedbd2] hover:border-[#c8c1b2]"
                     }`}
                     key={tool.id}
@@ -320,6 +392,7 @@ export function SpendInputForm() {
             </section>
           </div>
 
+          {/* Sticky sidebar */}
           <aside className="lg:sticky lg:top-6 lg:self-start">
             <section className="rounded-lg border border-[#171512] bg-[#171512] p-5 text-white shadow-lg">
               <div className="mb-5 flex items-center justify-between gap-3">

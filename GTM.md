@@ -53,3 +53,23 @@ Day 27 to 30: ship a short benchmark PDF from the first 50 audits. Title it "The
 
 The first 100 users should come from roughly 40 Reddit/community audits, 30 outbound audits, 20 fractional CFO referrals, and 10 warm network audits. If the product cannot get 100 free audits from that motion, paid acquisition will not save it.
 
+## The Unfair Distribution Channel
+
+Credex already has relationships with companies that overspent on AI infrastructure — that's literally the business. Every company that bought credits through Credex is a warm lead for SpendLens, and every SpendLens audit that surfaces $500+/month in savings is a warm lead for Credex. No generic spend tool has that loop.
+
+The specific move only Credex can make: email existing credit buyers and say "we noticed your team bought $X in credits last quarter — want a free audit to see if your app subscriptions are aligned?" That's not a cold outreach. It's a vendor following up with something genuinely useful. Open rates will be completely different from a cold campaign.
+
+Fractional CFOs are the second piece. There are thousands of them serving exactly the 10 to 80 person SaaS companies that SpendLens is built for. A fractional CFO who can drop a co-branded audit link into a client meeting is offering a real deliverable, not just a referral. Credex runs the infrastructure, the CFO gets a client touchpoint, and both share the qualified leads. No other tool in this space has the vendor-side positioning to make that referral fee credible.
+
+## What Week-1 Traction Looks Like If This Works
+
+Rough targets for a working launch week:
+
+- 300–500 unique visitors from the Reddit post and warm network
+- 80–120 completed audits (20–25% visit-to-audit)
+- 12–20 email captures on the result page (15–18% capture rate)
+- 3–5 audits surfacing over $500/month that trigger the Credex callout
+- At least 1 inbound asking about the Credex consultation
+
+Under 50 completed audits in week one means the distribution angle isn't working and needs to change before anything else. Over 100 audits but under 10 email captures means the result page isn't creating enough urgency — the problem is the product, not the traffic.
+

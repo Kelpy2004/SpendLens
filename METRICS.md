@@ -4,9 +4,9 @@
 
 North Star metric: verified monthly AI savings accepted by users.
 
-This is not the same as "savings found." A rule engine can always find theoretical savings by telling everyone to downgrade. That would be useless. The metric only counts savings when a user saves the audit, confirms the recommendation is plausible, or books a Credex cleanup call. The product wins when it changes a real spend decision without damaging the team's workflow.
+Not "savings found." A rule engine can claim savings by telling everyone to downgrade everything — that's useless and dishonest. The metric only counts when a user actually saves the audit, confirms the recommendation is plausible, or books a Credex call. The product wins when it changes a real spend decision.
 
-Example: if SpendLens finds $1,200/month in savings but the customer says only $800/month is actionable because the rest is tied to a contract, the North Star gets $800.
+Concrete example: SpendLens finds $1,200/month in savings, but the customer says $400 of that is locked in a contract until Q3. The North Star gets $800, not $1,200. That distinction matters a lot for measuring whether the product is actually useful vs. just impressive-looking.
 
 ## Input Metrics
 
@@ -44,5 +44,5 @@ Pivot the business model if qualified leads book consultations below 20%. That m
 
 Pivot away from Credex-led cleanup if paid conversion is below 15% after 50 consultations with qualified accounts. At that point, SpendLens may be more valuable as a benchmarking and renewal-prep product than as a front door to procurement services.
 
-Do not pivot because one channel is quiet for a week. Pivot when the math says the audience, ask, or monetization path is structurally wrong.
+Don't pivot because one channel had a slow week. Pivot when the numbers tell you the audience, the ask, or the monetization path is structurally broken — not just temporarily quiet.
 

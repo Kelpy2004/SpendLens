@@ -1,8 +1,8 @@
 # SpendLens Economics
 
-SpendLens is free at the audit layer. The business is Credex conversion: when the audit finds meaningful savings, Credex sells an AI spend cleanup and governance subscription.
+SpendLens is free. The business is Credex conversion — when the audit surfaces real savings, Credex sells the cleanup.
 
-The paid product should be priced against recovered waste, not against "another SaaS dashboard." If SpendLens finds $1,500/month in savings and Credex captures the cleanup, a $1,500/month subscription is easy to defend because the customer is roughly cash-neutral in month one and cleaner after that.
+The paid product needs to be priced against recovered waste, not against "yet another SaaS dashboard." If SpendLens finds $1,500/month in overspend and Credex captures that engagement, a $1,500/month subscription practically sells itself. The customer is roughly cash-neutral in month one and has cleaner governance after that. That's a defensible conversation.
 
 ## Offer And Pricing
 
@@ -46,11 +46,9 @@ Blended early CAC target: about $1,100. With $18,000 ARR and an 85% gross margin
 
 ## Payback And Margin
 
-If a customer pays $1,500/month and gross margin is 85%, monthly gross profit is $1,275.
+$1,500/month at 85% gross margin = $1,275 monthly gross profit. With $1,100 blended CAC, payback is under a month.
 
-With $1,100 blended CAC, payback is $1,100 / $1,275 = 0.86 months.
-
-That payback only holds if Credex onboarding stays productized. If every customer needs a bespoke consulting project, gross margin falls under 60%, onboarding becomes the bottleneck, and the company is a services firm with a nice lead magnet. The product line needs templates: renewal checklist, seat policy, vendor owner map, API usage review, and monthly savings report.
+That only holds if onboarding stays productized. The moment every customer needs a bespoke engagement, margin collapses to 60% and the team becomes a consulting shop with a nice landing page. The templates need to exist before customer 10: renewal checklist, seat policy, vendor owner map, API usage review, monthly savings report. Without those, the unit economics don't scale.
 
 ## Path To $1M ARR In 18 Months
 
@@ -76,5 +74,5 @@ Traffic needed over 18 months:
 
 That is about 1,785 targeted visitors per month. This is not consumer-scale traffic. It is a focused operator audience, which is why community content, referrals, and targeted outbound can plausibly get there before paid search.
 
-The failure mode is weak qualification. If most audits show $40/month in savings, users may like the product but will not buy Credex. The business only works if the audit consistently surfaces enough money or enough governance pain to justify a sales conversation.
+The failure mode is weak qualification. If most audits are showing $40/month in savings, people will like the product and do nothing. The business only works if the audit consistently surfaces enough real money — or enough governance pain — to make a sales conversation feel obvious rather than forced.
 
