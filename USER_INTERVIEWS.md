@@ -19,6 +19,8 @@ I asked him how he would benefit from my site. He said he uses AI tools quite a 
 
 > "A few more upgrades and I will be the first one to use this app. I really need it."
 
+I also asked him — if the site told you your spend was totally fine and you weren't overpaying, would you trust that answer or would it feel like the tool missed something? He said he'd trust it only if it showed the actual usage data behind the call and where the pricing numbers came from. Just a "you're good" with nothing backing it up wouldn't feel reliable to him.
+
 **Most surprising thing:** The feedback was almost all about design. He understood the value straight away — the problem was just that the UI looked rough so it didn't feel trustworthy.
 
 **What changed because of this:** The UI was changed after he advised. Which is why now it's easier to understand.
@@ -44,6 +46,8 @@ I asked him to go through the site. His first reaction was positive — the inte
 > "The interface is easy to get to... good work beta."
 
 > "Still needs work to be done."
+
+I asked him the same — if the site said your spend is totally fine, would you trust it? He said not straight away. He'd want to see what alternatives were compared against, and what assumptions the tool was making. If those aren't listed clearly he'd assume the tool just didn't check properly rather than his spend actually being okay.
 
 **Most surprising thing:** "I didn't know you can build sites now." (He was being humorous.)
 
