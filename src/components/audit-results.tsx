@@ -12,6 +12,7 @@ import Link from "next/link";
 import { LeadCaptureForm } from "@/components/lead-capture-form";
 import { ShareAuditButton } from "@/components/share-audit-button";
 import type { AuditSummaryResult } from "@/lib/audit/ai-summary";
+import type { PublicAuditPayload } from "@/lib/audit/public-audit";
 import type { AuditReport, ToolAuditResult } from "@/lib/audit/types";
 import { formatCurrency } from "@/lib/spend/summary";
 
@@ -20,6 +21,7 @@ type AuditResultsProps = {
   report: AuditReport;
   shareUrl: string;
   summary: AuditSummaryResult;
+  inputPayload: PublicAuditPayload;
 };
 
 export function AuditResults({
@@ -27,6 +29,7 @@ export function AuditResults({
   report,
   shareUrl,
   summary,
+  inputPayload,
 }: AuditResultsProps) {
   const hasCredexOpportunity = report.totalMonthlySavings > 500;
   const isSpendingWell = report.totalMonthlySavings < 100;
@@ -149,6 +152,18 @@ export function AuditResults({
           {report.results.map((result) => (
             <ToolResultCard key={result.toolId} result={result} />
           ))}
+
+          <div className="mt-4 flex flex-col items-center gap-3 rounded-lg border border-[#dedbd2] bg-white p-6 text-center shadow-sm">
+            <p className="text-sm text-[#6f695c]">
+              Want to try different inputs or update your stack?
+            </p>
+            <Link
+              className="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-[#171512] px-5 text-sm font-bold text-white transition hover:bg-[#2a251f]"
+              href="/"
+            >
+              Run another audit
+            </Link>
+          </div>
         </section>
 
         <aside className="grid min-w-0 h-fit gap-4 lg:sticky lg:top-6">
@@ -208,9 +223,13 @@ export function AuditResults({
             </dl>
           </section>
 
-          <LeadCaptureForm auditId={auditId} report={report} shareUrl={shareUrl} />
+          <LeadCaptureForm auditId={auditId} report={report} shareUrl={shareUrl} inputPayload={inputPayload} />
         </aside>
       </div>
+
+      <footer className="border-t border-[#dedbd2] bg-white px-5 py-6 text-center text-sm text-[#9c9385]">
+        SpendLens · Built for Credex · 2026
+      </footer>
     </main>
   );
 }

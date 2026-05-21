@@ -9,6 +9,42 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      stored_audits: {
+        Row: {
+          id: string;
+          audit_id: string;
+          email: string;
+          input_stack: Json;
+          output_result: Json;
+          pricing_snapshot: Json;
+          pricing_version: string;
+          created_at: string;
+          notified_at: string | null;
+        };
+        Insert: {
+          id?: string;
+          audit_id: string;
+          email: string;
+          input_stack: Json;
+          output_result: Json;
+          pricing_snapshot: Json;
+          pricing_version: string;
+          created_at?: string;
+          notified_at?: string | null;
+        };
+        Update: {
+          id?: string;
+          audit_id?: string;
+          email?: string;
+          input_stack?: Json;
+          output_result?: Json;
+          pricing_snapshot?: Json;
+          pricing_version?: string;
+          created_at?: string;
+          notified_at?: string | null;
+        };
+        Relationships: [];
+      };
       leads: {
         Row: {
           annual_savings: number;

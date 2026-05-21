@@ -99,6 +99,7 @@ export default async function AuditPage({
       report={report}
       shareUrl={shareUrl}
       summary={summary}
+      inputPayload={payload}
     />
   );
 }

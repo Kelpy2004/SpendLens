@@ -6,8 +6,9 @@ import {
   createLeadRateLimitKeys,
 } from "@/lib/leads/rate-limit";
 import { validateLeadCapturePayload } from "@/lib/leads/validation";
+import { capturePricingSnapshot } from "@/lib/audit/pricing-snapshot";
 import { getSupabaseAdminClient } from "@/lib/supabase/server";
-import type { Database } from "@/lib/supabase/types";
+import type { Database, Json } from "@/lib/supabase/types";
 
 export const runtime = "nodejs";
 
@@ -106,6 +107,22 @@ export async function POST(request: NextRequest) {
       { error: "Could not save lead right now." },
       { status: 500 },
     );
+  }
+
+  // Best-effort: store the full audit for re-audit detection without blocking lead capture.
+  const rawBody = body as Record<string, unknown>;
+
+  if (rawBody.inputStack && rawBody.auditResult) {
+    const snapshot = capturePricingSnapshot();
+
+    await supabase.from("stored_audits").insert({
+      audit_id: lead.auditId,
+      email: lead.email,
+      input_stack: rawBody.inputStack as Json,
+      output_result: rawBody.auditResult as Json,
+      pricing_snapshot: snapshot as unknown as Json,
+      pricing_version: snapshot.version,
+    });
   }
 
   const emailResult = await sendLeadConfirmationEmail(lead);

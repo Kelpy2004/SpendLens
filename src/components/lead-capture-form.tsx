@@ -4,11 +4,13 @@ import { CheckCircle2, Mail, Send, UserRound } from "lucide-react";
 import { useState } from "react";
 
 import type { AuditReport } from "@/lib/audit/types";
+import type { PublicAuditPayload } from "@/lib/audit/public-audit";
 
 type LeadCaptureFormProps = {
   auditId: string;
   report: AuditReport;
   shareUrl: string;
+  inputPayload: PublicAuditPayload;
 };
 
 type SubmissionState =
@@ -25,6 +27,7 @@ export function LeadCaptureForm({
   auditId,
   report,
   shareUrl,
+  inputPayload,
 }: LeadCaptureFormProps) {
   const [state, setState] = useState<SubmissionState>({
     message: "",
@@ -46,6 +49,8 @@ export function LeadCaptureForm({
         sourceUrl: shareUrl,
         teamSize: formData.get("teamSize"),
         website: formData.get("website"),
+        inputStack: inputPayload,
+        auditResult: report,
       }),
       headers: {
         "Content-Type": "application/json",
