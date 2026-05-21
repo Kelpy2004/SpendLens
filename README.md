@@ -1,8 +1,8 @@
 # SpendLens
 
-SpendLens is a free AI spend audit tool for startup founders, engineering managers, and finance leads who are paying for Cursor, Copilot, Claude, ChatGPT, Gemini, and API usage without a clear picture of whether any of it is right-sized. You enter your stack, get an instant audit with defensible savings math, and only then see the option to save the report by email.
+A free AI spend audit tool that tells startup founders, engineering managers, and finance leads exactly where their AI tool budget is leaking. Enter your stack — Cursor, Copilot, Claude, ChatGPT, Gemini, Windsurf, and API usage — and get an instant audit with defensible savings math. No login, no paywall. You only see the option to save the report after the audit proves it's worth saving.
 
-**Live:** https://spendlens-nu.vercel.app/
+**Live:** [https://spendlens-nu.vercel.app](https://spendlens-nu.vercel.app)
 
 ---
 
@@ -19,17 +19,15 @@ SpendLens is a free AI spend audit tool for startup founders, engineering manage
 
 ---
 
-Live app: [https://spendlens-nu.vercel.app](https://spendlens-nu.vercel.app)
+## What it does
 
-## Screenshots
+**Round 1 — One-time audit.** User enters their AI tool stack, gets a per-tool breakdown of what to keep, downgrade, or switch, with savings math verified against vendor pricing pages.
 
-![SpendLens intake form](public/screenshots/home-intake.png)
+**Round 2 — Re-audit on pricing change.** Saved audits are persisted with a frozen pricing snapshot. When tool pricing changes, SpendLens detects which audits are affected, emails users with a consolidated summary, and links them to a side-by-side diff view showing old vs new recommendations.
 
-![SpendLens audit result](public/screenshots/audit-result.png)
+---
 
-![SpendLens mobile audit result](public/screenshots/mobile-audit.png)
-
-## Quick Start
+## Quick start
 
 ```bash
 npm install
@@ -54,7 +52,16 @@ npm test
 npm run build
 ```
 
-**Deploy:** Push to Vercel. Set the environment variables below and run the Supabase migration at `supabase/migrations/202605100001_create_leads.sql` against your remote project.
+---
+
+## Deploy
+
+Push to Vercel. Set the environment variables below and run both Supabase migrations against your remote project:
+
+```
+supabase/migrations/202605100001_create_leads.sql
+supabase/migrations/202605200001_create_stored_audits.sql
+```
 
 **Required environment variables:**
 
@@ -67,30 +74,31 @@ ANTHROPIC_API_KEY=
 ANTHROPIC_MODEL=
 RESEND_API_KEY=
 RESEND_FROM_EMAIL=
+CRON_SECRET=              # optional — protects /api/detect-changes
 ```
 
 ---
 
-## Decisions
+## Architecture decisions
 
-**1. Audit logic is hardcoded TypeScript, not AI.**
+**Audit logic is hardcoded TypeScript, not AI.**
 Finance recommendations need to be deterministic and testable. If the engine says "downgrade from Copilot Enterprise to Business and save $200/month," a finance person should be able to verify that against the vendor pricing page. A model can't be audited. Pure functions can. The Anthropic API is used only for the summary paragraph — polish, not math.
 
-**2. Public audit URLs encode the spend snapshot instead of storing it.**
-My first instinct was to write every audit to Supabase and serve results from the database. I reversed that on Day 3. Storing anonymous company spend data before the user has agreed to anything breaks the product's core promise — show value first, ask for nothing until after. URL encoding is a real trade-off (longer links) but it keeps the anonymous flow completely offline, and the result page renders from the URL with no backend read at all.
+**Public audit URLs encode the spend snapshot instead of storing it.**
+Storing anonymous company spend data before the user has agreed to anything breaks the product's core promise — show value first, ask for nothing until after. URL encoding is a real trade-off (longer links) but it keeps the anonymous flow completely offline and the result page renders from the URL with no backend read at all.
 
-**3. Lead capture comes after the result, not before.**
-Putting an email gate before the audit would probably increase raw capture volume. It would also kill trust. Finance people who land here from a tweet are already skeptical. The product earns the email by showing real savings first. A smaller list of people who saw value and chose to save it beats a bigger list collected through friction.
+**Lead capture comes after the result, not before.**
+Putting an email gate before the audit would kill trust. Finance people who land here from a tweet are already skeptical. The product earns the email by showing real savings first.
 
-**4. API spend gets a usage-review flag, not a savings claim.**
-It would be easy to claim huge savings by comparing an API bill to a cheaper app subscription. SpendLens doesn't do that. API spend is flagged for usage review — export token usage by model before making any recommendation. That makes the output less dramatic but a lot more honest. A finance person who runs the audit twice should get the same answer both times.
+**API spend gets a usage-review flag, not a savings claim.**
+It would be easy to claim huge savings by comparing an API bill to a cheaper app subscription. SpendLens doesn't do that. API spend is flagged for usage review — export token usage by model before making any recommendation.
 
-**5. Rate limiting lives in memory, not a shared store.**
-For this build it's fine — the app runs on Vercel with low traffic. In a real production deployment across multiple regions, in-memory rate limits don't survive cold starts and don't coordinate between instances. The right fix is Upstash Redis or Vercel KV. That's documented in ARCHITECTURE.md and easy to swap in.
+**Re-audit only fires when the recommendation changes, not when a price moves.**
+A $1 bump that doesn't shift the advice shouldn't trigger an email. The detection engine re-runs the full audit with current pricing and only flags tools where the actual recommendation differs.
 
 ---
 
-## Lead Capture and Abuse Controls
+## Lead capture and abuse controls
 
 The lead form includes a hidden `website` field as a honeypot. Real users never see it or tab to it. When it has a value, the API returns 201 and quietly skips Supabase and Resend — no data written, no signal to the bot that anything happened.
 
