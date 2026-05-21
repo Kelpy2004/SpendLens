@@ -447,6 +447,11 @@ export function SpendInputForm() {
                 Run audit
                 <ArrowRight aria-hidden className="h-4 w-4" />
               </button>
+              {!canRunAudit && (
+                <p className="mt-3 text-xs leading-5 text-[#f4d35e]/70">
+                  Toggle at least one tool and enter a monthly spend to run the audit.
+                </p>
+              )}
               <p className="mt-3 text-xs leading-5 text-[#cfc6b3]">
                 Share URLs include spend inputs only. No email or company fields
                 are written into public links.
