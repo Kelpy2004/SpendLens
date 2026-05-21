@@ -12,6 +12,7 @@ import Link from "next/link";
 import { LeadCaptureForm } from "@/components/lead-capture-form";
 import { ShareAuditButton } from "@/components/share-audit-button";
 import type { AuditSummaryResult } from "@/lib/audit/ai-summary";
+import type { PublicAuditPayload } from "@/lib/audit/public-audit";
 import type { AuditReport, ToolAuditResult } from "@/lib/audit/types";
 import { formatCurrency } from "@/lib/spend/summary";
 
@@ -20,6 +21,7 @@ type AuditResultsProps = {
   report: AuditReport;
   shareUrl: string;
   summary: AuditSummaryResult;
+  inputPayload: PublicAuditPayload;
 };
 
 export function AuditResults({
@@ -27,6 +29,7 @@ export function AuditResults({
   report,
   shareUrl,
   summary,
+  inputPayload,
 }: AuditResultsProps) {
   const hasCredexOpportunity = report.totalMonthlySavings > 500;
   const isSpendingWell = report.totalMonthlySavings < 100;
@@ -208,7 +211,7 @@ export function AuditResults({
             </dl>
           </section>
 
-          <LeadCaptureForm auditId={auditId} report={report} shareUrl={shareUrl} />
+          <LeadCaptureForm auditId={auditId} report={report} shareUrl={shareUrl} inputPayload={inputPayload} />
         </aside>
       </div>
     </main>
