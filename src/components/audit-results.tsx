@@ -152,6 +152,18 @@ export function AuditResults({
           {report.results.map((result) => (
             <ToolResultCard key={result.toolId} result={result} />
           ))}
+
+          <div className="mt-4 flex flex-col items-center gap-3 rounded-lg border border-[#dedbd2] bg-white p-6 text-center shadow-sm">
+            <p className="text-sm text-[#6f695c]">
+              Want to try different inputs or update your stack?
+            </p>
+            <Link
+              className="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-[#171512] px-5 text-sm font-bold text-white transition hover:bg-[#2a251f]"
+              href="/"
+            >
+              Run another audit
+            </Link>
+          </div>
         </section>
 
         <aside className="grid min-w-0 h-fit gap-4 lg:sticky lg:top-6">
