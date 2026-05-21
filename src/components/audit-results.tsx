@@ -214,6 +214,10 @@ export function AuditResults({
           <LeadCaptureForm auditId={auditId} report={report} shareUrl={shareUrl} inputPayload={inputPayload} />
         </aside>
       </div>
+
+      <footer className="border-t border-[#dedbd2] bg-white px-5 py-6 text-center text-sm text-[#9c9385]">
+        SpendLens · Built for Credex · 2026
+      </footer>
     </main>
   );
 }
